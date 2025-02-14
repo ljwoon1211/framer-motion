@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { useRef } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
@@ -15,12 +15,11 @@ const Box = styled(motion.div)`
   width: 200px;
   height: 200px;
   /* background-color: white; */
-  background-color: rgba(255, 255,255,0.2);
+  background-color: rgba(255, 255,255,1);
   border-radius: 10px;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
   display: grid;
-  grid-template-columns: repeat(2,1fr);
-  border-radius: 40px;
+
 `;
 
 const Circle = styled(motion.div)`
@@ -32,44 +31,25 @@ const Circle = styled(motion.div)`
   place-self: center;
 `;
 
-const myVars = {
- start:{scale:0},
- end: {
-  scale:1, rotateZ:360, transition:{
-    type:"spring",delay:0.5
-  }
- }
+const boxVariants = {
+  hover: {scale:1.5, roatateZ:90},
+  click: { scale: 1, borderRadius: "100px" },
+  drag: { backgroundColor: "rgb(46, 204, 113)", transition: { duration: 10 } },
+
 }
 
-const boxVariants = {
-  start: {
-    opacity: 0,
-    scale: 0.5,
-  },
-  end: {
-    scale: 1,
-    opacity: 1,
-    transition: {
-      type: "spring",
-      duration: 0.5,
-      bounce: 0.5,
-      delayChildren: 0.5,
-      staggerChildren: 0.2,
-    },
-  },
-};
-const circleVariants = {
-  start: {
-    opacity: 0,
-    y: 10,
-  },
-  end: {
-    opacity: 1,
-    y: 0,
-  },
-};
+const BiggerBox = styled.div`
+    width: 600px;
+    height: 600px;
+    background-color: rgba(255, 255,255,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+`
 
 function App() {
+  const biggerBoxRef = useRef<HTMLDivElement>(null)
  
   return (
     <Wrapper>
@@ -77,12 +57,14 @@ function App() {
       {/* 애니메이션에 객체를 만든 후 initial, animate로 객체의 정보를 가져올 수 있다. 
         myVars 객체에 start, end를 만든 후 variants에 넣으면 사용가능
       */}
-      <Box variants={boxVariants} initial="start" animate="end">
-        <Circle variants={circleVariants} initial="start" animate="end"/>
-        <Circle variants={circleVariants} initial="start" animate="end"/>
-        <Circle variants={circleVariants} initial="start" animate="end"/>
-        <Circle variants={circleVariants} initial="start" animate="end"/>
-      </Box>
+      <BiggerBox ref={biggerBoxRef}>
+        <Box 
+        drag 
+        dragSnapToOrigin
+        dragConstraints={biggerBoxRef}
+        variants={boxVariants} whileHover="hover" whileDrag="drag" whileTap="click">
+        </Box>
+      </BiggerBox>
     </Wrapper>
   )
 }
