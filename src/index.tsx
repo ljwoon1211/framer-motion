@@ -1,13 +1,12 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from 'react-dom/client';
 import { RecoilRoot } from "recoil";
 import { ThemeProvider } from "styled-components";
-import App from "./App";
 import { darkTheme } from './styles/theme';
 
 import { createGlobalStyle } from "styled-components";
-import { RouterProvider } from "react-router-dom";
 import router from "./Router";
+import { RouterProvider } from "react-router-dom";
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
@@ -74,8 +73,12 @@ a {
 }
 `;
 
-ReactDOM.render(
-  // <React.StrictMode>
+const rootElement = document.getElementById('root');
+if (!rootElement) throw new Error('Failed to find the root element');
+const root = ReactDOM.createRoot(rootElement);
+
+
+root.render(  // <React.StrictMode>
     <RecoilRoot>
       <ThemeProvider theme={darkTheme}>
         <GlobalStyle />

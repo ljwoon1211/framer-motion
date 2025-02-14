@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 
 import { lazy,Suspense } from "react";
+import React from "react";
 // const ToDoList = lazy(() => import('./components/ToDoList'));
 
 // const Categories = lazy(() => import('./pages/Categories'));
