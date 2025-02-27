@@ -1,117 +1,103 @@
-import { AnimatePresence, motion, useMotionValue, useScroll, useTransform } from 'framer-motion';
-import React, { useEffect, useRef, useState } from 'react';
-import { useRecoilState } from 'recoil';
-import styled from 'styled-components';
-
+import { AnimatePresence, motion, useMotionValue, useScroll, useTransform } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
+import { useRecoilState } from "recoil";
+import styled from "styled-components";
 
 const Wrapper = styled(motion.div)`
-  height: 100vh;
+  display: grid;
   width: 100vw;
-  display: flex;
+  height: 100vh;
   justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  background: linear-gradient(135deg,rgb(2));
-`
+  align-content: center;
+  grid-template-columns: repeat(2, 400px);
+  grid-template-rows: repeat(2, 200px);
+  grid-gap: 10px;
+`;
+
 const Box = styled(motion.div)`
-  width: 200px;
+  background-color: white;
+  opacity: 0.5;
+  width: 400px;
   height: 200px;
-  /* background-color: white; */
-  background-color: rgba(255, 255,255,1);
+`;
+
+const Button = styled(motion.button)`
+  background-color: white;
+  border: 0.5px solid blue;
+  color: blue;
   border-radius: 10px;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
-  /* display: grid; */
+  width: 80px;
+  height: 30px;
+`;
+
+const Overlay = styled(motion.div)`
+  width: 100%;
+  height: 100%;
   position: absolute;
-  top: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 28px;
 `;
-
-const Circle = styled(motion.div)`
-  width: 100px;
-  height: 100px;
-  background-color: blue;
-  border-radius: 40px;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
-  place-self: center;
-`;
-
-const boxVariants = {
-  hover: {scale:1.5, roatateZ:90},
-  click: { scale: 1, borderRadius: "100px" },
-  drag: { backgroundColor: "rgb(46, 204, 113)", transition: { duration: 10 } },
-
-}
-
-const BiggerBox = styled.div`
-    width: 600px;
-    height: 600px;
-    background-color: rgba(255, 255,255,0.4);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-`
-const Svg = styled.svg`
-width: 300px;
-  height: 300px;
-  path {
-    stroke: white;
-    stroke-width: 2;
-  }
-`;
-
-const svg = {
-  start: { pathLength: 0, fill: "rgba(255, 255, 255, 0)" },
-  end: {
-    fill: "rgba(255, 255, 255, 1)",
-    pathLength: 1,
-  },
-};
-
-const box = {
-  entry:(isBack:boolean)=>({
-    x: isBack ? -500 : 500,
-    opacity: 0,
-    scale: 0,
-  }), 
-  center: {
-    x: 0,
-    opacity: 1,
-    scale: 1,
-    transition: {
-      duration: 1,
-    },
-  },
-  exit: (isBack:boolean)=>({ 
-    x: isBack? 500: -500, 
-    opacity: 0, 
-    scale: 0, 
-    transition: { duration: 1 } 
-  }),
-};
-
-
 
 function App() {
-  const [clicked, setClicked] = useState(false);
-  const toggleClicked = () => setClicked((prev) => !prev);
+  const [id, setId] = useState<string | null>(null);
+  const handleBoxClick = (id: string) => setId(id);
+
   return (
-    <Wrapper onClick={toggleClicked}>
-    <Box>
-      {!clicked ? (
-        <Circle layoutId="circle" style={{ borderRadius: 50 }} />
-      ) : null}
-    </Box>
-    <Box>
-      {clicked ? (
-        <Circle layoutId="circle" style={{ borderRadius: 0, scale: 2 }} />
-      ) : null}
-    </Box>
-  </Wrapper>
-  )
+    <>
+      <Wrapper>
+        <Box
+          layoutId={"1"}
+          onClick={() => handleBoxClick("1")}
+          whileHover={{
+            x: -40,
+            y: -20,
+            scale: 1.2,
+            transition: { duration: 0.5 },
+          }}
+        />
+        <Box
+          layoutId={"2"}
+          onClick={() => handleBoxClick("2")}
+          whileHover={{
+            x: 40,
+            y: -20,
+            scale: 1.2,
+            transition: { duration: 0.5 },
+          }}
+        />
+        <Box
+          onClick={() => handleBoxClick("3")}
+          whileHover={{
+            x: -40,
+            y: 20,
+            scale: 1.2,
+            transition: { duration: 0.5 },
+          }}
+        />
+        <Box
+          onClick={() => handleBoxClick("4")}
+          whileHover={{
+            x: 40,
+            y: 20,
+            scale: 1.2,
+            transition: { duration: 0.5 },
+          }}
+        />
+        {id ? (
+          <Overlay
+            initial={{ backgroundColor: "rgba(0, 0, 0, 0)" }}
+            animate={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+            exit={{ backgroundColor: "rgba(0, 0, 0, 0)" }}
+            onClick={() => setId(null)}
+          >
+            <Box layoutId={id}>{id}</Box>
+          </Overlay>
+        ) : null}
+        <Button>Switch</Button>
+      </Wrapper>
+    </>
+  );
 }
 
 export default App;
